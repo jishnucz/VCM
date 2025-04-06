@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // For navigation after logout
+import { useNavigate } from 'react-router-dom';
 
 const StudentDashboard = () => {
     const [classrooms, setClassrooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [joinedClassrooms, setJoinedClassrooms] = useState(new Set()); // Track joined classrooms
-    const studentId = localStorage.getItem('userId'); // Assuming student ID is stored in local storage
-    const navigate = useNavigate(); // For navigation
+    const [joinedClassrooms, setJoinedClassrooms] = useState(new Set());
+    const studentId = localStorage.getItem('userId');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchClassrooms = async () => {
@@ -34,7 +34,7 @@ const StudentDashboard = () => {
 
         try {
             await axios.post(`http://localhost:5000/api/classroom/join/${classroomId}`, { studentId });
-            setJoinedClassrooms(prev => new Set(prev).add(classroomId)); // Add to joined classrooms
+            setJoinedClassrooms(prev => new Set(prev).add(classroomId));
             setClassrooms(prevClassrooms => 
                 prevClassrooms.map(classroom => 
                     classroom._id === classroomId ? { ...classroom, students: [...classroom.students, { _id: studentId }] } : classroom
@@ -48,103 +48,91 @@ const StudentDashboard = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('userId'); // Clear user ID from local storage
-        localStorage.removeItem('token'); // Clear token if stored
-        navigate('/smaindashboard'); // Redirect to login page
+        localStorage.removeItem('userId');
+        localStorage.removeItem('token');
+        navigate('/smaindashboard');
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 p-8">
             {/* Header */}
-            <header className="bg-blue-600 text-white py-4 px-6 rounded-lg mb-6 flex justify-between items-center">
+            <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 px-8 rounded-xl shadow-lg mb-8 flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold">Virtual Classroom Management</h1>
-                    <p className="text-sm">Welcome back, Student!</p>
+                    <h1 className="text-4xl font-extrabold tracking-tight">Virtual Classroom Hub</h1>
+                    <p className="text-md mt-1 opacity-90">Welcome back, Student!</p>
                 </div>
                 <button
                     onClick={handleLogout}
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+                    className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-all duration-300 shadow-md"
                 >
                     Back
                 </button>
             </header>
 
             {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Sidebar */}
-                <aside className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Navigation</h2>
-                    <ul className="space-y-2">
-                        <li><a href="#" className="text-blue-600 hover:underline">Dashboard</a></li>
-                        <li><a href="#" className="text-gray-700 hover:underline">My Classrooms</a></li>
-                        <li><a href="#" className="text-gray-700 hover:underline">Assignments</a></li>
-                        <li><a href="#" className="text-gray-700 hover:underline">Grades</a></li>
-                        <li><a href="#" className="text-gray-700 hover:underline">Settings</a></li>
-                    </ul>
-                </aside>
-
-                {/* Classroom List */}
-                <main className="lg:col-span-3">
-                    <h2 className="text-2xl font-semibold mb-6">Available Classrooms</h2>
-                    {loading && <p className="text-center text-gray-600">Loading classrooms...</p>}
-                    {error && <p className="text-center text-red-500">{error}</p>}
-                    {!loading && classrooms.length === 0 && <p className="text-center text-gray-600">No classrooms available.</p>}
-                    {!loading && classrooms.length > 0 && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {classrooms.map(classroom => (
-                                <div key={classroom._id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                    <h3 className="text-xl font-semibold mb-2">{classroom.name}</h3>
-                                    <p className="text-gray-600 mb-4">
-                                        <strong>Subject:</strong> {classroom.subject || 'General'} <br />
-                                        <strong>Teacher:</strong> {classroom.teacher ? classroom.teacher.username : 'Unknown'} <br />
-                                        <strong>Schedule:</strong> {classroom.schedule || 'Not specified'}
-                                    </p>
-                                    <p className="text-sm text-gray-500 mb-4">
-                                        {classroom.description || 'No description available.'}
-                                    </p>
-                                    <button 
-                                        onClick={() => handleJoinClassroom(classroom._id)} 
-                                        disabled={joinedClassrooms.has(classroom._id)}
-                                        className={`w-full py-2 rounded ${
-                                            joinedClassrooms.has(classroom._id)
-                                                ? 'bg-green-500 cursor-not-allowed'
-                                                : 'bg-blue-500 hover:bg-blue-600'
-                                        } text-white font-semibold transition-colors`}
-                                    >
-                                        {joinedClassrooms.has(classroom._id) ? 'Joined' : 'Join Classroom'}
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </main>
-            </div>
+            <main>
+                <h2 className="text-3xl font-bold text-gray-800 mb-6">Available Classrooms</h2>
+                {loading && <p className="text-center text-gray-600 text-lg">Loading classrooms...</p>}
+                {error && <p className="text-center text-red-500 text-lg">{error}</p>}
+                {!loading && classrooms.length === 0 && <p className="text-center text-gray-600 text-lg">No classrooms available.</p>}
+                {!loading && classrooms.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {classrooms.map(classroom => (
+                            <div 
+                                key={classroom._id} 
+                                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                            >
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">{classroom.name}</h3>
+                                <p className="text-gray-600 mb-4">
+                                    <strong>Subject:</strong> {classroom.subject || 'General'} <br />
+                                    <strong>Teacher:</strong> {classroom.teacher ? classroom.teacher.username : 'Unknown'} <br />
+                                    <strong>Schedule:</strong> {classroom.schedule || 'Not specified'}
+                                </p>
+                                <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+                                    {classroom.description || 'No description available.'}
+                                </p>
+                                <button 
+                                    onClick={() => handleJoinClassroom(classroom._id)} 
+                                    disabled={joinedClassrooms.has(classroom._id)}
+                                    className={`w-full py-2 rounded-lg font-semibold text-white transition-all duration-300 ${
+                                        joinedClassrooms.has(classroom._id)
+                                            ? 'bg-green-500 cursor-not-allowed opacity-75'
+                                            : 'bg-blue-500 hover:bg-blue-600 shadow-md hover:shadow-lg'
+                                    }`}
+                                >
+                                    {joinedClassrooms.has(classroom._id) ? 'Joined' : 'Join Classroom'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </main>
 
             {/* Announcements Section */}
-            <section className="mt-8 bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-4">Recent Announcements</h2>
+            <section className="mt-10 bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Recent Announcements</h2>
                 <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold">Welcome to the New Semester!</h4>
+                    <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 className="font-semibold text-gray-800">Welcome to the New Semester!</h4>
                         <p className="text-sm text-gray-600">Classes will begin on October 1st. Please check your schedules.</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold">Assignment Submission Reminder</h4>
+                    <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 className="font-semibold text-gray-800">Assignment Submission Reminder</h4>
                         <p className="text-sm text-gray-600">Submit your assignments by October 10th to avoid penalties.</p>
                     </div>
                 </div>
             </section>
 
             {/* Upcoming Events Section */}
-            <section className="mt-8 bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-4">Upcoming Events</h2>
+            <section className="mt-10 bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Upcoming Events</h2>
                 <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold">Midterm Exams</h4>
+                    <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 className="font-semibold text-gray-800">Midterm Exams</h4>
                         <p className="text-sm text-gray-600">October 15th - October 20th</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold">Parent-Teacher Meeting</h4>
+                    <div className="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 className="font-semibold text-gray-800">Parent-Teacher Meeting</h4>
                         <p className="text-sm text-gray-600">October 25th, 10:00 AM</p>
                     </div>
                 </div>
