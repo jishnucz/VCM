@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth');
 const classroomRoutes = require('./routes/classroom');
 const userRoutes = require('./routes/user');
 const discussionRoutes = require('./routes/discussion');
+const postRoutes = require('./routes/post');
 
 require('dotenv').config();
 
@@ -21,7 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/classroom', classroomRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/discussions', discussionRoutes);
-
+app.use('/api/posts', postRoutes);
 
 
 const PORT = process.env.PORT || 5000;

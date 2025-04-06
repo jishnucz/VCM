@@ -12,14 +12,21 @@ const handleError = (res, error) => {
 
 // Create a classroom
 router.post('/', async (req, res) => {
-    const { name, teacherId } = req.body;
+    const { name, teacherId, subject, schedule, description } = req.body;
 
     // Validate teacherId
     if (!mongoose.Types.ObjectId.isValid(teacherId)) {
         return res.status(400).json({ message: 'Invalid teacher ID' });
     }
 
-    const classroom = new Classroom({ name, teacher: teacherId });
+    const classroom = new Classroom({ 
+        name, 
+        teacher: teacherId,
+        subject,
+        schedule,
+        description
+    });
+    
     try {
         await classroom.save();
         res.status(201).json(classroom);
@@ -60,6 +67,53 @@ router.get('/teacher/:teacherId', async (req, res) => {
     }
 });
 
+// Update classroom
+router.put('/:classroomId', async (req, res) => {
+    const { classroomId } = req.params;
+    const { name, subject, schedule, description } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(classroomId)) {
+        return res.status(400).json({ message: 'Invalid classroom ID' });
+    }
+
+    try {
+        const updatedClassroom = await Classroom.findByIdAndUpdate(
+            classroomId,
+            { name, subject, schedule, description },
+            { new: true, runValidators: true }
+        ).populate('students').populate('teacher');
+
+        if (!updatedClassroom) {
+            return res.status(404).json({ message: 'Classroom not found' });
+        }
+
+        res.json(updatedClassroom);
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
+// Delete classroom
+router.delete('/:classroomId', async (req, res) => {
+    const { classroomId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(classroomId)) {
+        return res.status(400).json({ message: 'Invalid classroom ID' });
+    }
+
+    try {
+        const classroom = await Classroom.findByIdAndDelete(classroomId);
+        
+        if (!classroom) {
+            return res.status(404).json({ message: 'Classroom not found' });
+        }
+
+        res.json({ message: 'Classroom deleted successfully' });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
 // Join a classroom
 router.post('/join/:classroomId', async (req, res) => {
     const { studentId } = req.body;
@@ -80,7 +134,6 @@ router.post('/join/:classroomId', async (req, res) => {
             return res.status(200).json({ message: 'Student is already in this classroom', joined: true });
         }
         
-
         classroom.students.push(studentId);
         await classroom.save();
         res.status(200).json({ message: "Successfully joined the classroom", classroom });
@@ -88,11 +141,5 @@ router.post('/join/:classroomId', async (req, res) => {
         res.status(500).json({ message: "Internal server error", error });
     }
 });
-
-
-
-
-
-
 
 module.exports = router;

@@ -16,6 +16,18 @@ const StudentDashboard = () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/classroom');
                 setClassrooms(response.data);
+                
+                // Check which classrooms the student has already joined
+                if (studentId) {
+                    const joined = new Set();
+                    response.data.forEach(classroom => {
+                        if (classroom.students && classroom.students.some(student => 
+                            student._id === studentId || student === studentId)) {
+                            joined.add(classroom._id);
+                        }
+                    });
+                    setJoinedClassrooms(joined);
+                }
             } catch (error) {
                 console.error('Error fetching classrooms:', error.response ? error.response.data : error.message);
                 setError('Failed to fetch classrooms.');
@@ -24,7 +36,7 @@ const StudentDashboard = () => {
             }
         };
         fetchClassrooms();
-    }, []);
+    }, [studentId]);
 
     const handleJoinClassroom = async (classroomId) => {
         if (joinedClassrooms.has(classroomId)) {
@@ -52,6 +64,17 @@ const StudentDashboard = () => {
         localStorage.removeItem('token');
         navigate('/smaindashboard');
     };
+
+    const filterJoinedClassrooms = () => {
+        return classrooms.filter(classroom => joinedClassrooms.has(classroom._id));
+    };
+
+    const filterAvailableClassrooms = () => {
+        return classrooms.filter(classroom => !joinedClassrooms.has(classroom._id));
+    };
+
+    const joinedClassroomsList = filterJoinedClassrooms();
+    const availableClassroomsList = filterAvailableClassrooms();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 p-8">

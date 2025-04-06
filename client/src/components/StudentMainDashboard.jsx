@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBook, FaClipboardList, FaGraduationCap, FaChalkboard, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaBook, FaClipboardList, FaGraduationCap, FaChalkboard, FaSignOutAlt, FaUser, FaBullhorn } from 'react-icons/fa';
 import BackgroundImage from '../assets/image3.jpg'; // Ensure the image path is correct
 
 const StudentMainDashboard = () => {
@@ -56,6 +56,7 @@ const StudentMainDashboard = () => {
                 {/* Dashboard Links */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <DashboardLink to="/student-dashboard" color="bg-green-700 hover:bg-green-800" icon={<FaChalkboard />} text="Student Panel" />
+                    <DashboardLink to="/student-posts" color="bg-red-600 hover:bg-red-700" icon={<FaBullhorn />} text="Announcements" />
                     <DashboardLink to="/discussions" color="bg-blue-700 hover:bg-blue-800" icon={<FaBook />} text="Discussions" />
                     <DashboardLink to="/assignments" color="bg-yellow-700 hover:bg-yellow-800" icon={<FaClipboardList />} text="Assignments" />
                     <DashboardLink to="/grades" color="bg-purple-700 hover:bg-purple-800" icon={<FaGraduationCap />} text="Grades" />

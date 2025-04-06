@@ -9,7 +9,8 @@ import TeacherMainDashboard from './components/TeacherMainDashboard';
 import CreateDiscussion from './components/CreateDiscussion';
 import Discussions from './components/Discussions';
 import Chat from './components/Chat';
-
+import TeacherPosts from './components/TeacherPosts'; 
+import StudentPosts from './components/StudentPosts';
 
 
 
@@ -26,6 +27,8 @@ function App() {
                 <Route path="/discussions" element={<Discussions />} />
                 <Route path="/discussion/:discussionId" element={<Chat />} />
                 <Route path="/creatediscussion" element={<CreateDiscussion />} />
+                <Route path="/teacher-posts" element={<TeacherPosts />} /> 
+                <Route path="/student-posts" element={<StudentPosts />} />
 
             </Routes>
         </Router>
