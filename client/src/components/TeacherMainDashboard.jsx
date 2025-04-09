@@ -38,8 +38,8 @@ const TeacherMainDashboard = () => {
                     <DashboardLink to="/teacher-dashboard" color="bg-blue-600 hover:bg-blue-700" icon={<FaChalkboardTeacher />} text="Teacher Panel" />
                     <DashboardLink to="/teacher-posts" color="bg-amber-600 hover:bg-amber-700" icon={<FaBullhorn />} text="Announcements" />
                     <DashboardLink to="/creatediscussion" color="bg-green-600 hover:bg-green-700" icon={<FaComments />} text="Discussions" />
-                    <DashboardLink to="/assignments" color="bg-yellow-600 hover:bg-yellow-700" icon={<FaTasks />} text="Assignments" />
-                    <DashboardLink to="/interactive-quizzes" color="bg-red-600 hover:bg-red-700" icon={<FaQuestionCircle />} text="Interactive Quizzes" />
+                    {/* <DashboardLink to="/assignments" color="bg-yellow-600 hover:bg-yellow-700" icon={<FaTasks />} text="Assignments" />
+                    <DashboardLink to="/interactive-quizzes" color="bg-red-600 hover:bg-red-700" icon={<FaQuestionCircle />} text="Interactive Quizzes" /> */}
                 </div>
             </div>
         </div>

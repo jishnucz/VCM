@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import validator from 'validator';
 import bgImage from '../assets/image1.jpg';
 
 const Login = () => {
@@ -11,6 +12,14 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError('');
+
+        // Validator checks
+        if (!validator.isLength(username, { min: 3 }) || !validator.isLength(password, { min: 6 })) {
+            setError('Please enter valid credentials.');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
             const { id, username: userName, role } = response.data;
@@ -35,9 +44,7 @@ const Login = () => {
             className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
             style={{ backgroundImage: `url(${bgImage})` }}
         >
-            {/* Overlay for better readability */}
             <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-
             <div className="relative bg-white p-8 rounded-lg shadow-lg w-96">
                 <h1 className="text-3xl font-bold mb-2 text-center text-blue-600">LearnArena</h1>
                 <h2 className="text-xl font-semibold mb-6 text-center text-gray-800">Login to your account</h2>
